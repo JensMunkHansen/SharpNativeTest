@@ -1,0 +1,146 @@
+@startdot
+digraph CMake {
+  rankdir=TD;
+  node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+  SWIG [label="foo.i", fillcolor=white];
+  CPP [label="Foo.hpp\nFoo.cpp"];
+
+  CPP -> SWIG [label="include", style=dashed];
+
+  subgraph clusterLinux {
+    color=crimson;
+    label = "Linux Host";
+    subgraph clusterCPP {
+      color=royalblue;
+      label = "C++";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+      LINUX_PKG [label="C++ dev packages\ne.g. cmake, g++", shape=box3d];
+      LINUX_LIB [label="libFoo.so\nruntimes/linux-x64/native/", shape=component, fillcolor=royalblue];
+
+      LINUX_WRAPPER_CPP [label="fooCSHARP_wrap.cxx"];
+      LINUX_WRAPPER_OBJ [label="fooCSHARP_wrap.cxx.o"];
+      LINUX_WRAPPER_LIB [label="mizux-dotnetnative-native.so\nruntimes/linux-x64/native/", shape=component];
+
+      LINUX_WRAPPER_CPP -> LINUX_WRAPPER_OBJ [label="g++", style=bold];
+      LINUX_WRAPPER_OBJ -> LINUX_WRAPPER_LIB [label="ld", style=bold];
+    }
+    subgraph clusterCS {
+      color=darkviolet;
+      label = ".Net";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=darkviolet];
+      LINUX_DOTNET_PKG [label=".Net SDK packages\ne.g. dotnet-cli", shape=box3d, fillcolor=darkviolet];
+      LINUX_RUNTIME_CSPROJ [label="Mizux.DotnetNative.runtime.linux-x64.csproj"];
+      LINUX_RUNTIME_NUPKG [label="Mizux.DotnetNative.runtime.linux-x64.nupkg", shape=folder];
+
+      LINUX_RUNTIME_CSPROJ -> LINUX_RUNTIME_NUPKG [label="dotnet pack", style=bold];
+    }
+    LINUX_LIB         -> LINUX_RUNTIME_CSPROJ [label="Content", style=dashed];
+    LINUX_WRAPPER_LIB -> LINUX_RUNTIME_CSPROJ [label="Content", style=dashed];
+    LINUX_LIB         -> LINUX_RUNTIME_NUPKG [label="pack", style=dashed];
+    LINUX_WRAPPER_LIB -> LINUX_RUNTIME_NUPKG [label="pack", style=dashed];
+  }
+  SWIG -> LINUX_WRAPPER_CPP [label="swig", style=bold];
+  CPP -> LINUX_WRAPPER_CPP [label="include", style=dashed];
+  CPP -> LINUX_LIB [label="g++, ld", style=bold];
+
+  subgraph clusterOsx {
+    color=forestgreen;
+    label = "macOS Host";
+    subgraph clusterCPP {
+      color=royalblue;
+      label = "C++";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+      OSX_PKG [label="C++ dev packages\ne.g. cmake, g++", shape=box3d];
+      OSX_LIB [label="libFoo.dylib\nruntimes/osx-x64/native/", shape=component, fillcolor=royalblue];
+
+      OSX_WRAPPER_CPP [label="fooCSHARP_wrap.cxx"];
+      OSX_WRAPPER_OBJ [label="fooCSHARP_wrap.cxx.o"];
+      OSX_WRAPPER_LIB [label="mizux-dotnetnative-native.dylib\nruntimes/osx-x64/native/", shape=component];
+
+      OSX_WRAPPER_CPP -> OSX_WRAPPER_OBJ [label="g++", style=bold];
+      OSX_WRAPPER_OBJ -> OSX_WRAPPER_LIB [label="ld", style=bold];
+    }
+    subgraph clusterCS {
+      color=darkviolet;
+      label = ".Net";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=darkviolet];
+      OSX_DOTNET_PKG [label=".Net SDK packages\ne.g. dotnet-cli", shape=box3d, fillcolor=darkviolet];
+      OSX_RUNTIME_CSPROJ [label="Mizux.DotnetNative.runtime.osx-x64.csproj"];
+      OSX_RUNTIME_NUPKG [label="Mizux.DotnetNative.runtime.osx-x64.nupkg", shape=folder];
+
+      OSX_RUNTIME_CSPROJ -> OSX_RUNTIME_NUPKG [label="dotnet pack", style=bold];
+    }
+    OSX_LIB         -> OSX_RUNTIME_CSPROJ [label="Content", style=dashed];
+    OSX_WRAPPER_LIB -> OSX_RUNTIME_CSPROJ [label="Content", style=dashed];
+    OSX_LIB         -> OSX_RUNTIME_NUPKG [label="pack", style=dashed];
+    OSX_WRAPPER_LIB -> OSX_RUNTIME_NUPKG [label="pack", style=dashed];
+  }
+  SWIG -> OSX_WRAPPER_CPP [label="swig", style=bold];
+  CPP -> OSX_WRAPPER_CPP [label="include", style=dashed];
+  CPP -> OSX_LIB [label="g++, ld", style=bold];
+
+  subgraph clusterWin {
+    color=dodgerblue;
+    label = "Windows Host";
+    subgraph clusterCPP {
+      color=royalblue;
+      label = "C++";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=royalblue];
+      WIN_PKG [label="C++ dev packages\ne.g. cmake, g++", shape=box3d];
+      WIN_LIB [label="libFoo.lib\nruntimes/win-x64/native/", shape=component, fillcolor=royalblue];
+
+      WIN_WRAPPER_CPP [label="fooCSHARP_wrap.cxx"];
+      WIN_WRAPPER_OBJ [label="fooCSHARP_wrap.cxx.o"];
+      WIN_WRAPPER_LIB [label="mizux-dotnetnative-native.dll\nruntimes/win-x64/native/", shape=component];
+
+      WIN_WRAPPER_CPP -> WIN_WRAPPER_OBJ [label="g++", style=bold];
+      WIN_WRAPPER_OBJ -> WIN_WRAPPER_LIB [label="ld", style=bold];
+    }
+    subgraph clusterCS {
+      color=darkviolet;
+      label = ".Net";
+      node [shape=note, style="rounded,filled", color=black, fillcolor=darkviolet];
+      WIN_DOTNET_PKG [label=".Net SDK packages\ne.g. dotnet-cli", shape=box3d, fillcolor=darkviolet];
+      WIN_RUNTIME_CSPROJ [label="Mizux.DotnetNative.runtime.win-x64.csproj"];
+      WIN_RUNTIME_NUPKG [label="Mizux.DotnetNative.runtime.win-x64.nupkg", shape=folder];
+
+      WIN_RUNTIME_CSPROJ -> WIN_RUNTIME_NUPKG [label="dotnet pack", style=bold];
+    }
+    WIN_LIB         -> WIN_RUNTIME_CSPROJ [label="Content", style=dashed];
+    WIN_WRAPPER_LIB -> WIN_RUNTIME_CSPROJ [label="Content", style=dashed];
+    WIN_LIB         -> WIN_RUNTIME_NUPKG [label="pack", style=dashed];
+    WIN_WRAPPER_LIB -> WIN_RUNTIME_NUPKG [label="pack", style=dashed];
+  }
+  SWIG -> WIN_WRAPPER_CPP [label="swig", style=bold];
+  CPP -> WIN_WRAPPER_CPP [label="include", style=dashed];
+  CPP -> WIN_LIB [label="g++, ld", style=bold];
+
+  subgraph clusterAny {
+    color=dimgrey;
+    label = "Any Previous Host";
+    node [shape=note, style="rounded,filled", color=black, fillcolor=darkviolet];
+    DOTNET_CS [label="Foo.cs"];
+    DOTNET_CSPROJ [label="Mizux.DotnetNative.csproj"];
+    DOTNET_DLL [label="Mizux.DotnetNative.dll\nlib/netstandard2.1/", shape=component];
+    DOTNET_NUPKG [label="Mizux.DotnetNative.nupkg", shape=folder];
+
+    DOTNET_CS -> DOTNET_CSPROJ [label="Compile", style=dashed];
+    DOTNET_CSPROJ -> DOTNET_DLL [label="dotnet build", style=bold];
+    DOTNET_DLL -> DOTNET_NUPKG [label="pack", style=dashed];
+    DOTNET_CSPROJ -> DOTNET_NUPKG [label="dotnet pack", style=bold];
+  }
+  SWIG -> DOTNET_CS [label="swig", style=bold];
+  LINUX_WRAPPER_LIB -> DOTNET_CS [label="PInvoke", style=dashed];
+  OSX_WRAPPER_LIB -> DOTNET_CS [label="PInvoke", style=dashed];
+  WIN_WRAPPER_LIB -> DOTNET_CS [label="PInvoke", style=dashed];
+
+  LINUX_RUNTIME_NUPKG -> DOTNET_CSPROJ [label="PackageReference", style=dashed];
+  OSX_RUNTIME_NUPKG -> DOTNET_CSPROJ [label="PackageReference", style=dashed];
+  WIN_RUNTIME_NUPKG -> DOTNET_CSPROJ [label="PackageReference", style=dashed];
+
+  LINUX_RUNTIME_NUPKG -> DOTNET_NUPKG [label="dependencies", style=dashed];
+  OSX_RUNTIME_NUPKG -> DOTNET_NUPKG [label="dependencies", style=dashed];
+  WIN_RUNTIME_NUPKG -> DOTNET_NUPKG [label="dependencies", style=dashed];
+}
+@enddot
+// vim: set tw=0 ts=2 sw=2 expandtab:
